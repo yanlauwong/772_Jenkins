@@ -1,48 +1,61 @@
 pipeline {
     agent any
 
-    environment {
-        NODE_ENV = 'development'
+    // this section configures Jenkins options
+    options {
+
+        // only keep 10 logs for no more than 10 days
+        buildDiscarder(logRotator(daysToKeepStr: '10', numToKeepStr: '10'))
+
+        // cause the build to time out if it runs for more than 12 hours
+        timeout(time: 12, unit: 'HOURS')
+
+        // add timestamps to the log
+        timestamps()
     }
 
+    // this section configures triggers
+    triggers {
+          // create a cron trigger that will run the job every day at midnight
+          // note that the time is based on the time zone used by the server
+          // where Jenkins is running, not the user's time zone
+          cron '@midnight'
+    }
+
+    // the pipeline section we all know and love: stages! :D
     stages {
-        stage('Install Dependencies') {
+        stage('Requirements') {
             steps {
-                echo 'Installing dependencies...'
-                sh 'npm install'
+                echo 'Installing requirements...'
             }
         }
-
-        stage('Run Tests') {
-            steps {
-                echo 'Running tests...'
-                sh 'npm test'
-            }
-        }
-
         stage('Build') {
             steps {
-                echo 'Building application...'
-                // Simulate a build (e.g., transpile, bundle)
-                sh 'echo "Build complete."'
+                echo 'Building..'
             }
         }
-
-        stage('Deploy') {
+        stage('Test') {
             steps {
-                echo 'Deploying application...'
-                // Simulate deployment (could be rsync, Docker push, etc.)
-                sh 'echo "Deployed successfully!"'
+                echo 'Testing..'
+            }
+        }
+        stage('Report') {
+            steps {
+                echo 'Reporting....'
             }
         }
     }
 
+    // the post section is a special collection of stages
+    // that are run after all other stages have completed
     post {
-        success {
-            echo 'Pipeline completed successfully.'
-        }
-        failure {
-            echo 'Pipeline failed.'
+
+        // the always stage will always be run
+        always {
+
+            // the always stage can contain build steps like other stages
+            // a "steps{...}" section is not needed.
+            echo "This step will run after all other steps have finished.  It will always run, even in the status of the build is not SUCCESS"
         }
     }
 }
