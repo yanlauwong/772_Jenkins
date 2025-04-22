@@ -9,14 +9,14 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 echo 'Installing dependencies...'
-                sh 'npm install'
+                bat 'npm install'
             }
         }
 
         stage('Run Tests') {
             steps {
                 echo 'Running tests...'
-                sh 'npm test'
+                bat 'npm test'
             }
         }
 
@@ -24,7 +24,7 @@ pipeline {
             steps {
                 echo 'Building application...'
                 // Simulate a build (e.g., transpile, bundle)
-                sh 'echo "Build complete."'
+                bat 'echo "Build complete."'
             }
         }
 
@@ -32,7 +32,7 @@ pipeline {
             steps {
                 echo 'Deploying application...'
                 // Simulate deployment (could be rsync, Docker push, etc.)
-                sh 'echo "Deployed successfully!"'
+                bat 'echo "Deployed successfully!"'
             }
         }
     }
